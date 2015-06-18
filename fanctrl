@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+
+use Switch;
+
+open(IN, "/sys/class/thermal/thermal_zone0/temp");
+$cputemp = <IN>/1000.0; #numbers
+close(IN);
+$cputempavg = $cputemp;
+
+system("echo 18 > /sys/class/gpio/export");
+system("echo out > /sys/class/gpio/gpio18/direction");
+system("echo 1 > /sys/class/gpio/gpio18/value");
+$fan_run = 1;
+
+while(1)
+{
+	open(IN, "/sys/class/thermal/thermal_zone0/temp");
+	$cputemp = <IN>/1000.0; #numbers
+	close(IN);
+	
+	$cputempavg = $cputempavg*0.9 + $cputemp*0.1;
+
+	if($cputempavg > 45)
+	{
+		$fan_run = 1;
+	}
+	if($cputempavg < 35)
+	{
+		$fan_run = 0;
+	}
+	if($cputempavg > 65)
+	{
+		$fan_run = 2;
+	}
+	switch ($fan_run) {
+		case 1 { system("echo 1 > /sys/class/gpio/gpio18/value");}
+		case 0 { system("echo 0 > /sys/class/gpio/gpio18/value");}
+		else   { system("shutdown -h now");}
+	}
+	sleep(10);
+}
+
+
+
