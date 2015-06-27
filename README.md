@@ -119,7 +119,7 @@ GPIOの横の部品にスリットがあり，そこが折れたため，スリ�
 
 
 ## チューニングのポイント
-
+to be done.
 
 # 製作記事
 ハードの工作の詳細は製作記事を参照してね．
@@ -157,7 +157,7 @@ GPIOの横の部品にスリットがあり，そこが折れたため，スリ�
 [breadboard]: breadboard.jpg "ブレッドボード利用時の配線イメージ"
 [circuit]: circuit.jpg "回路図"
 [openCase]: openCase.jpg "自作箱を開けた写真"
-[brokenCase]: brockenCase.jpg "箱の壊れた部分"
+[brokenCase]: brokenCase.jpg "箱の壊れた部分"
 
 
 
