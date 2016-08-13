@@ -39,11 +39,11 @@ force_turbo=1
 ## 2.2 RTC
 シリアルコンソール用のシールドには，RTCも搭載しているため，これを利用する場合，以下のURLを参照し，パッケージのインスールや設定を
 行う必要がある．
-[DS1307関係参考URL1]: <https://mynotebook.h2np.net/post/1085> "Raspberry Pi 2 にRTCモジュールをつける"
-[DS1307関係参考URL2]: <https://learn.adafruit.com/adding-a-real-time-clock-to-raspberry-pi?view=all> "Adding a Real Time Clock to Raspberry Pi"
+- [DS1307関係参考URL1](<https://mynotebook.h2np.net/post/1085> "Raspberry Pi 2 にRTCモジュールをつける")
+- [DS1307関係参考URL2](<https://learn.adafruit.com/adding-a-real-time-clock-to-raspberry-pi?view=all> "Adding a Real Time Clock to Raspberry Pi")
 
-[8564NB関係参考URL1]: <http://news.mynavi.jp/articles/2014/08/21/raspberry-pi4/002.html> "超小型PC「Raspberry Pi」で夏休み自由課題・第4回 - Raspberry Piの屋外モバイル、高層エレベーターの気圧変化を調べる"
-[8564NB関係参考URL2]: <http://tomosoft.jp/design/?p=5812> "Raspberry PIへリアルタイムクロックモジュールのI2C接続"
+- [8564NB関係参考URL1](<http://news.mynavi.jp/articles/2014/08/21/raspberry-pi4/002.html> "超小型PC「Raspberry Pi」で夏休み自由課題・第4回 - Raspberry Piの屋外モバイル、高層エレベーターの気圧変化を調べる")
+- [8564NB関係参考URL2](<http://tomosoft.jp/design/?p=5812> "Raspberry PIへリアルタイムクロックモジュールのI2C接続")
 
 # 3. 用意した部品
 ## 3.1 共通
