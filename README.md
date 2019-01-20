@@ -35,7 +35,7 @@ enable_uart=1
 core_freq=250
 ```
 
-### Pi zeroやzeroWの場合
+### Pi2, Pi zeroやzeroWの場合
 ```
 enable_uart=1
 ```
