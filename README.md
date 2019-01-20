@@ -89,28 +89,41 @@ GPIOの横の部品にスリットがあり，そこが折れたため，スリ�
 
 # 5. ファンの制御プログラム
 
-## getTemperature.sh
-    #!/bin/sh
-    cat /sys/class/thermal/thermal_zone0/temp
+## 5.1 準備
+シリアルコンソールを使うためには，/boot/config.txtを変更する必要がある．
+RaspbianのイメージをマイクロSDに焼いた際に，焼くのに使ったPC等で
+/boot/config.txtの末尾に以下の行を追加．
 
-##fanOff.sh
-    #!/bin/sh
-    
-    echo 18 >/sys/class/gpio/export
-    echo out >/sys/class/gpio/gpio18/direction
-    echo 0 > /sys/class/gpio/gpio18/value
+### Pi3の場合
+```
+enable_uart=1
+core_freq=250
+```
 
+### Pi zeroやzeroWの場合
+```
+enable_uart=1
+```
 
-## fanOn.sh
+## 5.2 インストール
+各プログラムをどこかパスの通っているところに置くか，プログラムをおいた場所にパスを通す．
+絶対に必要なのは「fanctrl」のみで，以下の3つは動作確認用のテストプログラムなので，
+特にインストールしなくても良い．
 
-    #!/bin/sh
-    
-    echo 18 >/sys/class/gpio/export
-    echo out >/sys/class/gpio/gpio18/direction
-    echo 1 > /sys/class/gpio/gpio18/value
+* getTemperature.sh
+* fanOff.sh
+* fanOn.sh
 
-##fanctrl
+現状は，systemctl用の定義ファイル等を作っていないので，/etc/rc.localに追加
+するなどしてください．
 
+あと，perlとperlのSwitchモジュールを使っているので，
+インストールしていない場合はインストールしてください．
+
+## 5.3 各プログラムの内容
+
+### fanctrl
+```
     #!/usr/bin/perl
     
     use Switch;
@@ -152,12 +165,72 @@ GPIOの横の部品にスリットがあり，そこが折れたため，スリ�
     	}
     	sleep(10);
     }
+```
 
 
-## チューニングのポイント
-to be done.
+### getTemperature.sh
+```
+    #!/bin/sh
+    cat /sys/class/thermal/thermal_zone0/temp
+```
 
-# 6. 製作記事
+### fanOff.sh
+```
+    #!/bin/sh
+    
+    echo 18 >/sys/class/gpio/export
+    echo out >/sys/class/gpio/gpio18/direction
+    echo 0 > /sys/class/gpio/gpio18/value
+```
+
+### fanOn.sh
+```
+    #!/bin/sh
+    
+    echo 18 >/sys/class/gpio/export
+    echo out >/sys/class/gpio/gpio18/direction
+    echo 1 > /sys/class/gpio/gpio18/value
+```
+
+# 6. チューニングのポイントや今後の予定
+
+## 6.1 チューニングのポイント
+### ファン制御用のピン番号
+ファンを制御するピンは18番に決め打ちになっているので，ピンを変更する場合は，「fanctrl」の以下の「gpio18」をファンの制御信号のピンに変更してください．
+```
+    	switch ($fan_run) {
+    		case 1 { system("echo 1 > /sys/class/gpio/gpio18/value");}
+    		case 0 { system("echo 0 > /sys/class/gpio/gpio18/value");}
+    		else   { system("shutdown -h now");}
+    	}
+```
+
+
+### CPU温度定義
+
+現状の「fanctrl」は45度でファンがまわり，35度でファンが止まります．ファンでは温度が下がらず65度以上になると強制シャットダウンするようになっているので，これらのしきい値は使う環境に合わせて変更してください．
+```
+    	if($cputempavg > 45)
+    	{
+    		$fan_run = 1;
+    	}
+    	if($cputempavg < 35)
+    	{
+    		$fan_run = 0;
+    	}
+    	if($cputempavg > 65)
+    	{
+    		$fan_run = 2;
+    	}
+```
+
+
+## 6.2 今後
+時間の余裕がないので，しばらくは対応できないけど，とりあえずは以下の項目は対応したい．
+* systemctlに対応したいなぁと思う．
+* 各種パラメータはプログラムの先頭の方でまとめて定義するか，定義ファイルを読むようにする．
+
+# 7. 製作記事
 ハードの工作の詳細は製作記事を参照してね．
 
 ## 千石の箱に収めた場合
@@ -165,6 +238,10 @@ to be done.
 
 ## 自分で箱に穴を開けて，ファンを付けた場合
 [改造箱版][original]
+
+# 8. ソフトウェアのライセンス
+
+GPL, BSD, MITあたりを想定してますが現状決めていません．どのライセンスがいいか意見があればくださいな．
 
 <!--以下はリンクの定義-->
 <!--参考文献-->
@@ -183,7 +260,7 @@ to be done.
 [2SC1815]: <http://akizukidenshi.com/catalog/g/gI-00881/> "トランジスタ (2SC1815GR 60V 150mA) 20個"
 [dcFan]: <https://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=557S-43JV> "SHICOH F4006AP-05QCW (0406-5) DCファン(5V)"
 [si-sheet]: <https://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=4AZ6-GFHU> "カモンSRS-40 ファン防振シリコンシート"
-[FanGuard]: <https://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=328B-2CE8>"40mm角ファンガード"
+[FanGuard]: <https://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=328B-2CE8> "40mm角ファンガード"
 [case3]: <http://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=EEHD-4KRC> "MultiComp MC-RP002-CLR Raspberry Pi B+専用ケース(クリア/ロゴあり)"
 
 
